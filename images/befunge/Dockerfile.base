@@ -1,9 +1,9 @@
-FROM  debian:bullseye-slim
+FROM python:3.12-alpine
 
 SHELL ["/bin/bash", "-c"]
 
 ONBUILD WORKDIR /app
+ONBUILD COPY befunge_intepretor.py /app/befunge_intepretor.py
+ONBUILD COPY ./app /app/app
 
-ONBUILD COPY ./app ./app
-
-ONBUILD CMD ["/root/bef", "./app/main.bf"]
+ONBUILD CMD ["python3", "befunge_intepretor.py", "/app/app/main.bf"]
