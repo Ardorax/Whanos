@@ -1,0 +1,11 @@
+FROM gcc:13.2
+
+SHELL ["/bin/bash", "-c"]
+
+WORKDIR /app
+
+COPY /app /app
+
+RUN make && make clean
+
+CMD ["./compiled-app"]
