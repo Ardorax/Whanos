@@ -1,0 +1,14 @@
+FROM  debian:bullseye-slim
+
+SHELL ["/bin/bash", "-c"]
+
+ONBUILD RUN apt-get update && \
+    apt-get install -y befunge-93 && \
+    rm -rf /var/lib/apt/lists/*
+
+ONBUILD WORKDIR /app
+
+ONBUILD COPY ./app ./app
+
+
+ONBUILD CMD ["/bef", "./app/main.bf"]
