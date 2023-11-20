@@ -1,0 +1,22 @@
+jenkins:
+  remotingSecurity:
+    enable: true
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          name: "admin"
+          password: {ADMIN_PASSWORD}
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+          - name: "admin"
+            description: "Administrator of the Whanos"
+            permissions:
+              - "Overall/Administer"
+            assignments:
+              - "admin"
+jobs:
+  - file: {JENKINS_JOBS_FILE}
