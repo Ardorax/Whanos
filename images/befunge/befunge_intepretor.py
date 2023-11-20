@@ -67,8 +67,8 @@ def printGrid(grid):
     """
     for row in grid:
         for col in row:
-            print(col),
-        print
+            print(col,end=""),
+        print("")
 
 def step():
     """Advance the Befunge grid one step"""
@@ -185,10 +185,10 @@ def processInstruction(instruction):
         stack.pop()
     elif instruction == ".":
         # POP AND OUTPUT AS INTEGER FOLLOWED BY SPACE
-        print(stack.pop(), " ",)
+        print(stack.pop(), " ",end="")
     elif instruction == ",":
         #  POP AND OUTPUT AS ASCII CHARACTER
-        print(chr(stack.pop())),
+        print(chr(stack.pop()),end=""),
     elif instruction == "#":
         # BRIDGE -- SKIP NEXT CELL
         move()

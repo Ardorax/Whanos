@@ -1,14 +1,9 @@
-FROM  debian:bullseye-slim
+FROM python:3.12-alpine
 
 SHELL ["/bin/bash", "-c"]
 
-ONBUILD RUN apt-get update && \
-    apt-get install -y befunge-93 && \
-    rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY befunge_intepretor.py /app/befunge_intepretor.py
+COPY ./app /app/app
 
-ONBUILD WORKDIR /app
-
-ONBUILD COPY ./app ./app
-
-
-ONBUILD CMD ["/bef", "./app/main.bf"]
+CMD ["python3", "befunge_intepretor.py", "/app/app/main.bf"]
