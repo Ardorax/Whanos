@@ -3,7 +3,7 @@
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied"
-    exit 1
+    exit 84
 fi
 
 declare -A ext_map
@@ -22,3 +22,11 @@ do
         echo "Found ${ext_map[$ext]} for $ext"
     fi
 done
+
+if [ ${#found_map[@]} -eq 0 ];
+then
+    echo "No template found"
+    exit 0
+fi
+
+exit ${#found_map[@]}

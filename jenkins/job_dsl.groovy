@@ -109,7 +109,7 @@ freeStyleJob('Link-project') (
                         github("\${GITUB_REPO}", "\${GITUB_BRANCH}")
                     }
                     steps {
-                        shell("\$(PATH_TO_WHANOS)/link_job.sh"))
+                        shell("\bash $(PATH_TO_WHANOS)/link_job.sh"))
                     }
                 '''.stripIndent()
             )
