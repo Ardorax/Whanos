@@ -161,7 +161,7 @@ We welcome contributions to enhance the Whanos project. If you have suggestions,
 
 For major changes, please open an issue first to discuss proposed changes.
 
-For more information, see [Contributing](../CONTRIBUTING.md).
+For more information, see [Contributing](./CONTRIBUTING.md).
 
 ## License
 This project is part of the Epitech 3rd-year curriculum and is intended for educational purposes.
