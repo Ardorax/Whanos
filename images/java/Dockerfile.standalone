@@ -1,4 +1,4 @@
-FROM maven:3.8-openjdk-21-slim as builder
+FROM maven:3.9 as builder
 
 SHELL ["/bin/bash", "-c"]
 
@@ -19,4 +19,4 @@ COPY --from=builder /app /app
 
 WORKDIR /app
 
-ONBUILD CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
