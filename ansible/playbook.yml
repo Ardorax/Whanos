@@ -1,0 +1,5 @@
+- name: Launch the base task
+  hosts: jenkins-1
+  roles:
+    - base
+    - jenkins

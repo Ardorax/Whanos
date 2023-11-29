@@ -1,0 +1,83 @@
+- name: Update apt-get cache
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true
+
+- name: Create config folder
+  ansible.builtin.file:
+    path: /var/lib/jenkins/casc_configs/
+    state: directory
+  become: true
+
+- name: Copy config file
+  ansible.builtin.template:
+    src: ../files/jenkins.yml
+    dest: /var/lib/jenkins/casc_configs/jenkins.yml
+  become: true
+
+- name: ensure the jenkins apt repository key is installed
+  ansible.builtin.apt_key:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    state: present
+  become: true
+
+- name: ensure the repository is configured
+  ansible.builtin.apt_repository:
+    repo: deb https://pkg.jenkins.io/debian binary/
+    state: present
+  become: true
+
+- name: ensure java is installed
+  ansible.builtin.apt:
+    pkg:
+      - fontconfig
+      - openjdk-17-jre
+  become: true
+
+- name: ensure jenkins is installed
+  ansible.builtin.apt:
+    pkg:
+      - jenkins
+  become: true
+
+- name: Jenkins Skip startUp for MI
+  lineinfile:
+    dest=/etc/default/jenkins
+    regexp='^JENKINS_JAVA_OPTIONS='
+    line='JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
+  register: result_skip_startup_wizard
+  become: true
+
+- name: ensure jenkins is running
+  ansible.builtin.service:
+    name: jenkins
+    state: restarted
+  become : true
+
+- name: Get jenkins initial admin password
+  ansible.builtin.command: "cat /var/lib/jenkins/secrets/initialAdminPassword"
+  register: jenkins_password
+  changed_when: jenkins_password.rc == 0
+  become: true
+
+- name: Wait for Jenkins to start up
+  ansible.builtin.uri:
+    url: http://localhost:8080
+    status_code: 200
+    timeout: 5
+  register: jenkins_service_status
+  # Keep trying for 5 mins in 5 sec intervals
+  retries: 60
+  delay: 5
+  until: >
+     'status' in jenkins_service_status and
+     jenkins_service_status['status'] == 200
+
+- name: Install plugin
+  community.general.jenkins_plugin:
+    name: configuration-as-code
+  become: true
+
+- name: test
+  debug:
+    msg: lol
