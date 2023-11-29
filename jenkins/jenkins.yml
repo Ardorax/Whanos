@@ -20,3 +20,6 @@ jenkins:
 unclassified:
   location:
     url: http://127.0.0.1:8080/
+
+jobs:
+  - file: "/usr/local/job_dsl.groovy"

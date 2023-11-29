@@ -19,7 +19,7 @@ for ext in "${!ext_map[@]}"
 do
     if test -f $1/${ext_map[$ext]} || test -f $1/app/${ext_map[$ext]}; then
         found_map[$ext]=${ext_map[$ext]}
-        echo "Found ${ext_map[$ext]} for $ext"
+        echo "${ext_map[$ext]}"
     fi
 done
 

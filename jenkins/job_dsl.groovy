@@ -85,34 +85,5 @@ freeStyleJob('Whanos base images/whanos-befunge') {
 
 freeStyleJob('Whanos base images/Build all base images') {}
 
-freeStyleJob('Link-project') (
-    wrappers {
-        preBuildCleanup()
-    }
-    parameters {
-        stringParam("GITUB_REPO", "" , "Github repository owner/name (e.g. 'epitech/whanos')")
-        stringParam("GITUB_BRANCH", "" , "Github branch (e.g. 'master')")
-        stringParam("DISPLAY_NAME", "" , "Display name for the job (e.g. 'Whanos')")
-    }
-    steps {
-        dsl {
-            text(
-                '''
-                freeStyleJob("\${DISPLAY_NAME}") {
-                    wrappers {
-                        preBuildCleanup()
-                    }
-                    triggers {
-                        scm("\* * * * *")
-                    }
-                    scm {
-                        github("\${GITUB_REPO}", "\${GITUB_BRANCH}")
-                    }
-                    steps {
-                        shell("\bash $(PATH_TO_WHANOS)/link_job.sh"))
-                    }
-                '''.stripIndent()
-            )
-        }
-    }
-)
+freeStyleJob('Link-project') {
+}
