@@ -1,22 +1,22 @@
 jenkins:
-  remotingSecurity:
-    enable: true
+  systemMessage: "Welcome to Jenkins!"
   securityRealm:
     local:
       allowsSignup: false
       users:
-        - id: "admin"
-          name: "admin"
-          password: {ADMIN_PASSWORD}
+        - id: "Admin"
+          name: "Admin"
+          password: "${ADMIN_PASSWORD}"
   authorizationStrategy:
     roleBased:
       roles:
         global:
-          - name: "admin"
-            description: "Administrator of the Whanos"
+          - name: "Admin"
+            description: "Administrator role"
             permissions:
               - "Overall/Administer"
-            assignments:
-              - "admin"
-jobs:
-  - file: {JENKINS_JOBS_FILE}
+            entries:
+              - user: "Admin"
+unclassified:
+  location:
+    url: http://127.0.0.1:8080/
