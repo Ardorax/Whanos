@@ -1,5 +1,6 @@
 - name: Launch the base task
-  hosts: jenkins-1
+  hosts: jenkins-registry-1
   roles:
     - base
     - jenkins
+    - registry

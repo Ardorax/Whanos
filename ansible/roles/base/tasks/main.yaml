@@ -1,6 +1,14 @@
+- name: Update apt-get cache
+  ansible.builtin.apt:
+    update_cache: yes
+  become: true
+
 - name: Install basic packages
   ansible.builtin.apt:
     pkg:
       - vim
       - curl
+      - ca-certificates
+      - curl
+      - gnupg
   become: true
