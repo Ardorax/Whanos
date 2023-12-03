@@ -5,17 +5,25 @@
 
 - name: Create config folder
   ansible.builtin.file:
-    path: /var/lib/jenkins/casc_configs/
+    path: /var/lib/jenkins/configuration-as-code/
     state: directory
   become: true
 
 - name: Copy config file
-  ansible.builtin.template:
+  ansible.builtin.copy:
     src: ../files/jenkins.yml
-    dest: /var/lib/jenkins/casc_configs/jenkins.yml
+    dest: /var/lib/jenkins/configuration-as-code/jenkins.yml
+    mode: u=rw,g=r,o=r
   become: true
 
-- name: ensure the jenkins apt repository key is installed
+- name: Copy groovy file
+  ansible.builtin.copy:
+    src: ../files/job_dsl.groovy
+    dest: /usr/local/job_dsl.groovy
+    mode: u=rw,g=r,o=r
+  become: true
+
+- name: Install the Jenkins apt repository key is installed
   ansible.builtin.apt_key:
     url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
     state: present
@@ -27,57 +35,59 @@
     state: present
   become: true
 
-- name: ensure java is installed
+- name: Install java
   ansible.builtin.apt:
     pkg:
       - fontconfig
       - openjdk-17-jre
   become: true
 
-- name: ensure jenkins is installed
+- name: Install Jenkins
   ansible.builtin.apt:
     pkg:
       - jenkins
   become: true
+  register: install_jenkins
 
-- name: Jenkins Skip startUp for MI
-  lineinfile:
-    dest=/etc/default/jenkins
-    regexp='^JENKINS_JAVA_OPTIONS='
-    line='JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"'
+- name: Remove Jenkins wizard
+  ansible.builtin.lineinfile:
+    dest=/usr/lib/systemd/system/jenkins.service
+    regexp='^Environment="JAVA_OPTS=-Djava.awt.headless=true'
+    line='Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"\nEnvironment="CASC_JENKINS_CONFIG=/var/lib/jenkins/configuration-as-code/jenkins.yml"'
   register: result_skip_startup_wizard
   become: true
+  when: install_jenkins is changed # Only change one time
 
-- name: ensure jenkins is running
+- name: Start Jenkins
+  ansible.builtin.service:
+    name: jenkins
+    state: started
+    daemon_reload: true
+  become : true
+
+- name: Download Jenkins CLI jar
+  ansible.builtin.get_url:
+    url: "http://localhost:8080/jnlpJars/jenkins-cli.jar"
+    dest: /opt/jenkins-cli.jar
+  become: true
+  register: download_jenkins_cli
+
+- name: Get basic auth password
+  ansible.builtin.shell: cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: default_password
+  become: true
+  when: download_jenkins_cli is changed
+
+- name: Install plugins
+  ansible.builtin.shell: "java -jar /opt/jenkins-cli.jar -s http://localhost:8080/ -auth admin:{{ default_password.stdout }} install-plugin {{ lookup('file', '../files/plugins.txt') | regex_replace('\n', ' ') }}"
+  become: true
+  when: download_jenkins_cli is changed
+
+- name: Restart Jenkins
   ansible.builtin.service:
     name: jenkins
     state: restarted
+    daemon_reload: true
   become : true
-
-- name: Get jenkins initial admin password
-  ansible.builtin.command: "cat /var/lib/jenkins/secrets/initialAdminPassword"
-  register: jenkins_password
-  changed_when: jenkins_password.rc == 0
-  become: true
-
-- name: Wait for Jenkins to start up
-  ansible.builtin.uri:
-    url: http://localhost:8080
-    status_code: 200
-    timeout: 5
-  register: jenkins_service_status
-  # Keep trying for 5 mins in 5 sec intervals
-  retries: 60
-  delay: 5
-  until: >
-     'status' in jenkins_service_status and
-     jenkins_service_status['status'] == 200
-
-- name: Install plugin
-  community.general.jenkins_plugin:
-    name: configuration-as-code
-  become: true
-
-- name: test
-  debug:
-    msg: lol
+  # when: download_jenkins_cli is changed
+  # The previous line should be removed if the goal is to reach 100% of idempotency.
