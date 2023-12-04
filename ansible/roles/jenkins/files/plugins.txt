@@ -1,4 +1,3 @@
-# plugins.txt
 cloudbees-folder:latest
 configuration-as-code:latest
 credentials:latest

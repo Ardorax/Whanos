@@ -5,7 +5,7 @@
   become: true
 
 - name: Copy config file
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: ../files/jenkins.yml
     dest: /var/lib/jenkins/configuration-as-code/jenkins.yml
     mode: u=rw,g=r,o=r
