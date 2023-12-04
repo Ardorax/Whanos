@@ -8,82 +8,50 @@ folder('Projects') {
     displayName('Projects')
 }
 
-freeStyleJob('Whanos base images/whanos-c') {
-    wrappers {
-        preBuildCleanup()
-    }
-    steps {
-        shell("docker build -t whanos-c < - /images/c/Dockerfile.base")
-        shell("docker tag whanos-c localhost:5000/whanos-c")
-        shell("docker push localhost:5000/whanos-c")
-        shell("docker rmi whanos-c")
-    }
-    triggers {
-        upstream('Build all base images', 'SUCCESS')
-    }
-}
+def languages = ['befunge', 'c', 'java', 'javascript', 'python']
 
-freeStyleJob('Whanos base images/whanos-java') {
-    wrappers {
-        preBuildCleanup()
-    }
-    steps {
-        shell("docker build -t whanos-java < - /images/java/Dockerfile.base")
-        shell("docker tag whanos-java localhost:5000/whanos-java")
-        shell("docker push localhost:5000/whanos-java")
-        shell("docker rmi whanos-java")
-    }
-    triggers {
-        upstream('Build all base images', 'SUCCESS')
-    }
-}
-
-freeStyleJob('Whanos base images/whanos-javascript') {
-    wrappers {
-        preBuildCleanup()
-    }
-    steps {
-        shell("docker build -t whanos-javascript < - /images/javascript/Dockerfile.base")
-        shell("docker tag whanos-javascript localhost:5000/whanos-javascript")
-        shell("docker push localhost:5000/whanos-javascript")
-        shell("docker rmi whanos-javascript")
-    }
-    triggers {
-        upstream('Build all base images', 'SUCCESS')
-    }
-}
-
-freeStyleJob('Whanos base images/whanos-python') {
-    wrappers {
-        preBuildCleanup()
-    }
-    steps {
-        shell("docker build -t whanos-python < - /images/python/Dockerfile.base")
-        shell("docker tag whanos-python localhost:5000/whanos-python")
-        shell("docker push localhost:5000/whanos-python")
-        shell("docker rmi whanos-python")
-    }
-    triggers {
-        upstream('Build all base images', 'SUCCESS')
-    }
-}
-
-freeStyleJob('Whanos base images/whanos-befunge') {
-    wrappers {
-        preBuildCleanup()
-    }
-    steps {
-        shell("docker build -t whanos-befunge < - /images/befunge/Dockerfile.base")
-        shell("docker tag whanos-befunge localhost:5000/whanos-befunge")
-        shell("docker push localhost:5000/whanos-befunge")
-        shell("docker rmi whanos-befunge")
-    }
-    triggers {
-        upstream('Build all base images', 'SUCCESS')
+languages.each { language ->
+    freeStyleJob("Whanos base images/Build ${language} base image") {
+        description("Build ${language} base image")
+        displayName("Build ${language} base image")
+        wrappers {
+            preBuildCleanup()
+        }
+        steps {
+            shell("docker build -t whanos-${language} -f images/${language}/Dockerfile.base .")
+        }
+        triggers {
+            upstream('Whanos base images/Build all base images', 'SUCCESS')
+        }
     }
 }
 
 freeStyleJob('Whanos base images/Build all base images') {}
 
 freeStyleJob('Link-project') {
+    parameters {
+        stringParam("GITHUB_NAME", "", "Github repository owner/name (e.g. 'epitech/whanos')")
+        stringParam("GITUB_BRANCH", "" , "Github branch (e.g. 'master')")
+        stringParam("DISPLAY_NAME", "" , "Display name for the job (e.g. 'Whanos')")
+    }
+    steps {
+        dsl {
+            text('''
+            freeStyleJob("Projects/${DISPLAY_NAME}") {
+                wrappers {
+                    preBuildCleanup()
+                }
+                triggers {
+                    scm("* * * * *")
+                }
+                scm {
+                    github("${GITHUB_NAME}", "${GITUB_BRANCH}")
+                }
+                steps {
+                    shell("sh /script/deploy.sh")
+                }
+            }
+            '''.stripIndent())
+        }
+    }
 }
