@@ -18,6 +18,8 @@
     mode: u=rw,g=r,o=r
   become: true
 
+- name: 
+
 - name: Install the Jenkins apt repository key is installed
   ansible.builtin.apt_key:
     url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
@@ -53,7 +55,14 @@
   become: true
   when: install_jenkins is changed # Only change one time
 
-- name:
+- name: Copy Job file
+  ansible.builtin.copy:
+    path: ../files/job.sh
+    dest: /var/lib/jenkins/
+    mode: u=rw,g=r,o=r
+  become: true
+
+- name: Create Images folder
   ansible.builtin.file:
     path: /var/lib/jenkins/images
     state: directory

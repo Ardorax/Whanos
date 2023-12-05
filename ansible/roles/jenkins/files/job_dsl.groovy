@@ -46,7 +46,10 @@ freeStyleJob('Link-project') {
                 }
                 scm {
                     github("${GITHUB_NAME}", "${GITUB_BRANCH}")
-                }   
+                }
+                steps {
+                    shell("sh /var/lib/jenkins/job.sh ${DISPLAY_NAME}")
+                }
             }
             '''.stripIndent())
         }
