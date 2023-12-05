@@ -55,7 +55,7 @@
 
 - name: Copy Job file
   ansible.builtin.copy:
-    path: ../files/job.sh
+    src: ../files/job.sh
     dest: /var/lib/jenkins/
     mode: u=rw,g=r,o=r
   become: true
