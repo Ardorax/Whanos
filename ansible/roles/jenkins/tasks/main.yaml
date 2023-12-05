@@ -11,6 +11,13 @@
     mode: u=rw,g=r,o=r
   become: true
 
+- name: Copy template finder
+  ansible.builtin.template:
+    src: ../files/foundTemplate.sh
+    dest: /var/lib/jenkins/foundTemplate.sh
+    mode: u=rw,g=r,o=r
+  become: true
+
 - name: Copy groovy file
   ansible.builtin.copy:
     src: ../files/job_dsl.groovy
