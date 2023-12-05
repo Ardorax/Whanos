@@ -12,10 +12,10 @@
   become: true
 
 - name: Copy template finder
-  ansible.builtin.template:
+  ansible.builtin.copy:
     src: ../files/foundTemplate.sh
     dest: /var/lib/jenkins/foundTemplate.sh
-    mode: u=rw,g=r,o=r
+    mode: u=rwx,g=rx,o=rx
   become: true
 
 - name: Copy groovy file

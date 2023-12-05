@@ -3,10 +3,10 @@ FROM gcc:13.2
 SHELL ["/bin/bash", "-c"]
 
 WORKDIR /app
-COPY /app /app
+COPY . .
 
 RUN make && make clean
 
-RUN find /path/to/directory -type f ! -name 'compiled-app' -exec rm -f {} +
+RUN find . -type f ! -name 'compiled-app' -exec rm -f {} +
 
 CMD ["./compiled-app"]

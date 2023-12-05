@@ -28,7 +28,7 @@ languages.each { language ->
 
 freeStyleJob('Whanos base images/Build all base images') {}
 
-freeStyleJob('Link-project') {
+freeStyleJob('link-project') {
     parameters {
         stringParam("GITHUB_NAME", "", "Github repository owner/name (e.g. 'epitech/whanos')")
         stringParam("GITUB_BRANCH", "" , "Github branch (e.g. 'master')")
