@@ -11,10 +11,15 @@
   become: true
 
 - name: Update apt and install docker-ce
-  apt:
-    name: docker-ce
-    state: latest
-    update_cache: true
+  ansible.builtin.apt:
+    update_cache: yes
+    state: present
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
   become: true
 
 - name: Pull registry Docker image

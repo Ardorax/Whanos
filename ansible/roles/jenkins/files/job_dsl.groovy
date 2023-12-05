@@ -18,7 +18,7 @@ languages.each { language ->
             preBuildCleanup()
         }
         steps {
-            shell("docker build -t whanos-${language} -f images/${language}/Dockerfile.base .")
+            shell("docker build -t whanos-${language} -f /var/lib/jenkins/images/${language}/Dockerfile.base .")
         }
         triggers {
             upstream('Whanos base images/Build all base images', 'SUCCESS')
@@ -46,10 +46,7 @@ freeStyleJob('Link-project') {
                 }
                 scm {
                     github("${GITHUB_NAME}", "${GITUB_BRANCH}")
-                }
-                steps {
-                    shell("sh /script/deploy.sh")
-                }
+                }   
             }
             '''.stripIndent())
         }

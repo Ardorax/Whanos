@@ -53,6 +53,25 @@
   become: true
   when: install_jenkins is changed # Only change one time
 
+- name:
+  ansible.builtin.file:
+    path: /var/lib/jenkins/images
+    state: directory
+  become: true
+
+- name: Copy docker image
+  ansible.builtin.copy:
+    src: ../../../../images/
+    dest: /var/lib/jenkins/images
+    mode: u=rw,g=r,o=r
+  become: true
+
+- name: Set jenkins to docker
+  shell: "usermod -a -G docker jenkins"
+  args:
+    executable: /bin/bash
+  become: true
+
 - name: Start Jenkins
   ansible.builtin.service:
     name: jenkins
