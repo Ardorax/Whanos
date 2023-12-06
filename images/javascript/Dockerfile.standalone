@@ -10,6 +10,6 @@ COPY package-lock.json .
 
 RUN ["npm", "install"]
 
-COPY app/ ./app/
+COPY . .
 
 CMD ["node", "."]
