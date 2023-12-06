@@ -11,6 +11,13 @@
     mode: u=rw,g=r,o=r
   become: true
 
+- name: Copy credentials
+  ansible.builtin.copy:
+    src: ../files/dockerCredentials
+    dest: /var/lib/jenkins/dockerCredentials
+    mode: u=rw,g=r,o=r
+  become: true
+
 - name: Copy template finder
   ansible.builtin.copy:
     src: ../files/foundTemplate.sh
