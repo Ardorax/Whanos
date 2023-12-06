@@ -2,3 +2,4 @@ ansible/production
 **/vars/*.yml
 ansible/vm.sh
 ansible/setup.sh
+dockerCredentials

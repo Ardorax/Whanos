@@ -3,8 +3,13 @@ FROM node:20.9
 SHELL ["/bin/bash", "-c"]
 
 ONBUILD WORKDIR /app
-ONBUILD COPY . /app
 
-ONBUILD RUN npm install
+ONBUILD COPY package.json .
+
+ONBUILD COPY package-lock.json .
+
+ONBUILD RUN ["npm", "install"]
+
+ONBUILD COPY app/ ./app/
 
 ONBUILD CMD ["node", "."]
