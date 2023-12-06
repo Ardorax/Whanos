@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
-DOCKER_PASSWORD=""
-DOCKER_HUB_USERNAME=""
-DOCKER_HUB_REPO_NAME=""
+DOCKER_HUB_USERNAME=$(cat /var/lib/jenkins/dockerCredentials | grep "DOCKER_USERNAME" | cut -d'=' -f2)
+DOCKER_PASSWORD=$(cat /var/lib/jenkins/dockerCredentials | grep "DOCKER_PASSWORD" | cut -d'=' -f2)
+DOCKER_HUB_REPO_NAME=$(cat /var/lib/jenkins/dockerCredentials | grep "DOCKER_REGISTRY" | cut -d'=' -f2)
 
 FOUND_TEMPLATES_PATH="/var/lib/jenkins/foundTemplate.sh"
 
@@ -17,8 +17,6 @@ PYTHON_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/python/"
 BEFUNGE_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/befunge/"
 
 FOUND_TEMPLATES=$($FOUND_TEMPLATES_PATH $PROJECT_PATH)
-
-echo $dd1
 
 # if the return is 0, then stop the script
 if [ $? -eq 0 ]; then
@@ -55,17 +53,16 @@ if [ -z $RIGHT_FOLDER ]; then
     exit 0
 fi
 
-IMAGE_NAME=$DOCKER_HUB_USERNAME/$DOCKER_HUB_REPO_NAME:$2-$3-$LANGUAGE
+IMAGE_NAME=$DOCKER_HUB_USERNAME/$DOCKER_HUB_REPO_NAME:$1-$LANGUAGE
 
-echo "RIGHT_FOLDER: $RIGHT_FOLDER"
-BUILD_CMD="docker build -t $IMAGE_NAME -f ${RIGHT_FOLDER}Dockerfile.standalone ."
+docker login -u $DOCKER_HUB_USERNAME --password $DOCKER_PASSWORD
 
 if [ -f "Dockerfile" ]; then
     echo "Dockerfile found"
-    $BUILD_CMD = "docker build -t $IMAGE_NAME - < ${RIGHT_FOLDER}Dockerfile.base"
-fi
-docker login -u izimio --password $DOCKER_PASSWORD
+    docker build -t $IMAGE_NAME .
+else
+    docker build -t $IMAGE_NAME -f ${RIGHT_FOLDER}Dockerfile.standalone .
+fi 
 
-$($BUILD_CMD)
 
 docker push $IMAGE_NAME
