@@ -22,6 +22,12 @@
       - docker-compose-plugin
   become: true
 
+- name: Set jenkins to docker
+  shell: "usermod -a -G docker jenkins"
+  args:
+    executable: /bin/bash
+  become: true
+
 - name: Pull registry Docker image
   community.docker.docker_image:
     name: registry

@@ -11,4 +11,5 @@
       - ca-certificates
       - curl
       - gnupg
+      - apt-transport-https
   become: true

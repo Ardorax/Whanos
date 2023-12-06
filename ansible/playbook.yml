@@ -4,3 +4,5 @@
     - base
     - jenkins
     - registry
+    - gcloud
+    - kubectl
