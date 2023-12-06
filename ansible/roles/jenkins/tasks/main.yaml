@@ -14,7 +14,7 @@
 - name: Copy credentials
   ansible.builtin.copy:
     src: ../files/dockerCredentials
-    dest: /var/lib/jenkins/dockerCredentials
+    dest: /usr/local/dockerCredentials
     mode: u=rw,g=r,o=r
   become: true
 
