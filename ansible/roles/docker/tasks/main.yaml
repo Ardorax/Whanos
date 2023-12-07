@@ -25,5 +25,6 @@
 - name: Add the docker group to jenkins user
   ansible.builtin.user:
     append: true
-    goups: docker
+    groups: docker
     name: jenkins
+  become: true

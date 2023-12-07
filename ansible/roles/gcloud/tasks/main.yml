@@ -24,7 +24,7 @@
 - name: Copy GKE credentials
   ansible.builtin.copy:
     src: ../files/gke_key.json
-    dest: /var/gke_key.json
+    dest: /var/lib/jenkins/gke_key.json
     mode: u=rw,g=r,o=r
   become: true
 
