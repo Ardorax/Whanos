@@ -18,4 +18,30 @@
     state: present
     pkg:
       - google-cloud-cli
+      - google-cloud-sdk-gke-gcloud-auth-plugin
   become: true
+
+- name: Copy GKE credentials
+  ansible.builtin.copy:
+    src: ../files/gke_key.json
+    dest: /var/lib/jenkins/gke_key.json
+    mode: u=rw,g=r,o=r
+  become: true
+
+- name: Login to GKE
+  ansible.builtin.shell:
+    cmd: gcloud auth login --cred-file=/var/lib/jenkins/gke_key.json
+  become: true
+  become_user: jenkins
+
+- name: Set GKE project
+  ansible.builtin.shell:
+    cmd: gcloud config set project {{ gke_project }}
+  become: true
+  become_user: jenkins
+
+- name: Get credentials for GKE cluster
+  ansible.builtin.shell:
+    cmd: gcloud container clusters get-credentials {{ gke_cluster }} --region {{ gke_region }}
+  become: true
+  become_user: jenkins

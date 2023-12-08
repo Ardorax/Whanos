@@ -16,11 +16,16 @@
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Images](#images-folder)
-  - [images](#images-folder)
-  - [jenkins](#jenkins-folder)
-  - [kubernetes](#kubernetes-folder)
 - [Jenkins](#jenkins-folder)
-- [Configuration](#configuration)
+- [Ansible](#ansible-folder-🐙)
+  - [Folder Architecture](#folder-architecture-📂)
+  - [Roles](#roles)
+  - [Base](#base)
+  - [Jenkins](#jenkins-👔)
+  - [Docker](#Docker)
+  - [Kubectl](#Kubectl-🛟)
+  - [Gcloud](#Gcloud-💭)
+  - [Run it ! 🏃](#run-it-!-🏃)
 - [Customization](#customization)
 - [Contributing](#contributing)
 - [License](#license)
@@ -142,10 +147,117 @@ Here are the specificities of each language:
 ### jenkins Folder
 ...
 
-### kubernetes Folder
-...
+### Ansible Folder 🐙
 
-## Configuration
+#### Folder Architecture 📂
+
+```
+    .
+    |-- roles
+    |   |-- base
+    |     |-- tasks
+    |
+    |   |-- jenkins
+    |     |-- files
+    |     |-- tasks
+    |     |-- vars
+    |
+    |   |-- docker
+    |     |-- tasks
+    |
+    |   |-- kubectl
+    |     |-- tasks
+    |
+    |   |-- gcloud
+    |     |-- tasks
+    .
+```
+
+** EXPLAIN WHY WE USE ANSIBLE **
+
+#### Roles
+
+Roles is the main folder of the ansible project. It contains all the roles used by ansible to deploy the project. Each role is a set of tasks that are executed by ansible. Each role has its own folder. The folder contains the tasks, the vars and the files used by the role.
+
+#### Base
+
+The base role is used to install the dependencies of the project. It is used to install docker, docker-compose, git, etc...
+
+#### Jenkins 👔
+
+The jenkins role is used to install and configure jenkins in the server.
+
+It is separated in 3 folders:
+
+- files
+- tasks
+- vars
+
+
+**Files**
+
+The files folder contains the files used for the jenkins jobs. 
+
+=> `job_dsl.groovy` is used to create to create and parameter all the jobs in jenkins.
+
+=> `job.sh` is used to detect the project's programing language, build the appropriate docker image and push it to a **Docker hub** private registry. Make it then available to the `kubernetes cluster`.
+> ℹ️ The job.sh requires secrets to be run properly. The secrets are to be set in the dockerCredentials file.
+> 💡 Just rename the dockerCredentials.schema file to dockerCredentials and fill it with your credentials.
+
+
+**Tasks**
+
+The tasks folder contains the tasks used by ansible to install and configure jenkins.
+> e.g : Install the plugins, create the jobs, copy the files, etc...
+
+
+**Vars**
+
+The vars folder contains the secrets used for the jenkins instance.
+
+> 💡 Just rename the main.yml.schema file to main.yml and fill the **admin_password** with the password you want to use for the jenkins instance.
+
+#### Docker
+
+** EXPLAIN **
+
+#### Kubectl 🛟
+
+** EXPLAIN  **
+
+
+#### Gcloud 💭
+
+** EXPLAIN  **
+
+
+### Run it ! 🏃
+
+create a file named `production` in the ansible folder and add the following lines:
+
+```bash
+all:
+  children:
+    jenkins:
+      hosts:
+        jenkins-registry-1:
+          ansible_host: YOUR_SERVER_IP
+          ansible_port: YOUR_SERVER_PORT
+          ansible_user: YOUR_SERVER_USERNAME
+          ansible_become_password: YOUR_SERVER_PASSWORD
+```
+
+Then run the following commands:
+
+```bash
+ansible-playbook -i production playbook.yml
+```
+
+
+Ansible should then automatically install and configure jenkins in your server.
+
+> Accessible at `http://YOUR_SERVER_IP:8080`
+
 ...
 
 ## Customization

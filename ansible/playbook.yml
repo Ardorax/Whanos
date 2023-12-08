@@ -3,6 +3,6 @@
   roles:
     - base
     - jenkins
-    - registry
+    - docker
     - gcloud
     - kubectl
