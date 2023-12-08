@@ -4,3 +4,4 @@ ansible/vm.sh
 ansible/setup.sh
 dockerCredentials
 **/gcloud/files/*
+terraform/*
