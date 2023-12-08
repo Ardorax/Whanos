@@ -1,0 +1,21 @@
+# https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+
+- name: Add Kubectl GPG Key
+  apt_key:
+    url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
+    state: present
+  become: true
+
+- name: Add kubectl package source
+  apt_repository:
+    repo: deb https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /
+    state: present
+  become: true
+
+- name: Update apt and install google cloud cli
+  ansible.builtin.apt:
+    update_cache: yes
+    state: present
+    pkg:
+      - kubectl
+  become: true

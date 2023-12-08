@@ -87,12 +87,6 @@
     mode: u=rw,g=r,o=r
   become: true
 
-- name: Set jenkins to docker
-  shell: "usermod -a -G docker jenkins"
-  args:
-    executable: /bin/bash
-  become: true
-
 - name: Start Jenkins
   ansible.builtin.service:
     name: jenkins
