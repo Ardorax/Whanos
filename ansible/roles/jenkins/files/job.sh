@@ -21,36 +21,37 @@ FOUND_TEMPLATES=$($FOUND_TEMPLATES_PATH $PROJECT_PATH)
 # if the return is 0, then stop the script
 if [ $? -eq 0 ]; then
     echo "No template found"
-    exit 0
+    exit 1 # Return 1 to stop the script with error
 fi
 
 LANGUAGE=""
 RIGHT_FOLDER=""
 
-if [ $FOUND_TEMPLATES = "Makefile" ]; then
-    RIGHT_FOLDER=$C_IMAGES_FOLDER
+if [ "$FOUND_TEMPLATES" = "Makefile" ]; then
+    RIGHT_FOLDER="$C_IMAGES_FOLDER"
     LANGUAGE="c"
 fi
-if [ $FOUND_TEMPLATES = "pom.xml" ]; then
-    RIGHT_FOLDER=$JAVA_IMAGES_FOLDER
+if [ "$FOUND_TEMPLATES" = "pom.xml" ]; then
+    RIGHT_FOLDER="$JAVA_IMAGES_FOLDER"
     LANGUAGE="java"
 fi
-if [ $FOUND_TEMPLATES = "package.json" ]; then
-    RIGHT_FOLDER=$NODE_IMAGES_FOLDER
+if [ "$FOUND_TEMPLATES" = "package.json" ]; then
+    RIGHT_FOLDER="$NODE_IMAGES_FOLDER"
     LANGUAGE="javascript"
 fi
-if [ $FOUND_TEMPLATES = "requirements.txt" ]; then
-    RIGHT_FOLDER=$PYTHON_IMAGES_FOLDER
+if [ "$FOUND_TEMPLATES" = "requirements.txt" ]; then
+    RIGHT_FOLDER="$PYTHON_IMAGES_FOLDER"
     LANGUAGE="python"
 fi
-if [ $FOUND_TEMPLATES = "app/main.bf" ]; then
-    RIGHT_FOLDER=$BEFUNGE_IMAGES_FOLDER
+if [ "$FOUND_TEMPLATES" = "app/main.bf" ]; then
+    RIGHT_FOLDER="$BEFUNGE_IMAGES_FOLDER"
     LANGUAGE="befunge"
 fi
 ## else
-if [ -z $RIGHT_FOLDER ]; then
-    echo "Too many templates found"
-    exit 0
+if [ -z "$RIGHT_FOLDER" ]; then
+    echo "Too many templates found $RIGHT_FOLDER"
+    echo "Too many templates found($FOUND_TEMPLATES)"
+    exit 1 # Return 1 to stop the script with error
 fi
 
 IMAGE_NAME=$DOCKER_HUB_USERNAME/$DOCKER_HUB_REPO_NAME:$1-$LANGUAGE

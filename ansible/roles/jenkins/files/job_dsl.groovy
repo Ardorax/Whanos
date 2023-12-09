@@ -19,8 +19,8 @@ languages.each { language ->
         }
         steps {
             shell("docker build -t whanos-${language} -f /var/lib/jenkins/images/${language}/Dockerfile.base .")
-            shell("docker tag whanos-${language} localhost:5000/whanos-${language}")
-            shell("docker push localhost:5000/whanos-${language}")
+            // shell("docker tag whanos-${language} localhost:5000/whanos-${language}")
+            // shell("docker push localhost:5000/whanos-${language}")
         }
         triggers {
             upstream('Whanos base images/Build all base images', 'SUCCESS')
