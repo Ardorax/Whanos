@@ -9,9 +9,9 @@ def parseFile(filename):
     return configFile
 
 def openBaseConfig():
-    with open('redis.service.yaml', 'r') as f:
+    with open('app.service.yaml', 'r') as f:
         redisService = yaml.safe_load(f)
-    with open('redis.deployment.yaml', 'r') as f:
+    with open('app.deployment.yaml', 'r') as f:
         redisDeploy = yaml.safe_load(f)
     return redisService, redisDeploy
 
@@ -19,7 +19,7 @@ def replaceReplicas(redisDeploy, config):
     if 'replicas' in config['deployment'] and config['deployment']['replicas'] != None:
         redisDeploy['spec']['replicas'] = config['deployment']['replicas']
     return redisDeploy
-    
+
 def replaceresources(redisDeploy, config):
     if 'resources' in config['deployment'] and config['deployment']['resources'] != None:
         if 'limits' in config['deployment']['resources'] and config['deployment']['resources']['limits'] != None:
@@ -55,8 +55,28 @@ def replacePorts(redisDeploy, redisService, config):
         redisService['spec']['ports'] = targetPorts
     return redisService, redisDeploy
 
+def changeName(redisService, redisDeploy, name):
+    redisService['metadata']['name'] = f"{name}-service"
+    redisDeploy['metadata']['name'] = f"{name}-deployment"
+    return redisService, redisDeploy
+
+def replaceImage(redisDeploy, image):
+    redisDeploy['spec']['template']['spec']['containers'][0]['image'] = image
+
+def replaceLabels(redisService, redisDeploy, name):
+    redisService['metadata']['labels']['app'] = name
+    redisService['spec']['selector']['app'] = name
+    redisDeploy['metadata']['labels']['app'] = name
+    redisDeploy['spec']['selector']['matchLabels']['app'] = name
+    redisDeploy['spec']['template']['metadata']['labels']['app'] = name
+    redisDeploy['spec']['template']['spec']['containers'][0]['name'] = name
+    return redisService, redisDeploy
+
 def replaceInFile(config):
     redisService, redisDeploy = openBaseConfig()
+    changeName(redisService, redisDeploy, sys.argv[2])
+    replaceImage(redisDeploy, sys.argv[3])
+    replaceLabels(redisService, redisDeploy, sys.argv[2])
     redisDeploy = replaceReplicas(redisDeploy, config)
     redisDeploy = replaceresources(redisDeploy, config)
     redisService, redisDeploy = replacePorts(redisDeploy, redisService, config)
@@ -66,13 +86,13 @@ def main():
     configFile = parseFile(sys.argv[1])
     if not 'deployment' in configFile:
         print('No deployment section found in config')
-        return 84
+        return 1
     (redisService, redisDeploy) = replaceInFile(configFile)
-    with open('redis.service.yaml', 'w') as f:
+    with open('app.service.yaml', 'w') as f:
         yaml.dump(redisService, f)
-    with open('redis.deployment.yaml', 'w') as f:
+    with open('app.deployment.yaml', 'w') as f:
         yaml.dump(redisDeploy, f)
     return 0
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

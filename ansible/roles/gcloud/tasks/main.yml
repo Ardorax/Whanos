@@ -27,21 +27,24 @@
     dest: /var/lib/jenkins/gke_key.json
     mode: u=rw,g=r,o=r
   become: true
+  become_user: jenkins
+  register: copy_gke_key
 
 - name: Login to GKE
   ansible.builtin.shell:
     cmd: gcloud auth login --cred-file=/var/lib/jenkins/gke_key.json
   become: true
   become_user: jenkins
+  when: copy_gke_key.changed
 
 - name: Set GKE project
   ansible.builtin.shell:
-    cmd: gcloud config set project {{ gke_project }}
+    cmd: gcloud config set project {{ GKE_PROJECT }}
   become: true
   become_user: jenkins
 
 - name: Get credentials for GKE cluster
   ansible.builtin.shell:
-    cmd: gcloud container clusters get-credentials {{ gke_cluster }} --region {{ gke_region }}
+    cmd: gcloud container clusters get-credentials {{ GKE_CLUSTER }} --region {{ GKE_REGION }}
   become: true
   become_user: jenkins

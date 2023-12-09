@@ -1,8 +1,7 @@
 #!/bin/bash
 
-DOCKER_HUB_USERNAME=$(cat /var/lib/jenkins/dockerCredentials | grep "DOCKER_USERNAME" | cut -d'=' -f2)
-DOCKER_PASSWORD=$(cat /var/lib/jenkins/dockerCredentials | grep "DOCKER_PASSWORD" | cut -d'=' -f2)
-DOCKER_HUB_REPO_NAME=$(cat /var/lib/jenkins/dockerCredentials | grep "DOCKER_REGISTRY" | cut -d'=' -f2)
+DOCKER_HUB_USERNAME=$(cat /var/lib/jenkins/registryInfo | grep "DOCKER_USERNAME" | cut -d'=' -f2)
+DOCKER_HUB_REPO_NAME=$(cat /var/lib/jenkins/registryInfo | grep "DOCKER_REGISTRY" | cut -d'=' -f2)
 
 FOUND_TEMPLATES_PATH="/var/lib/jenkins/foundTemplate.sh"
 
@@ -56,14 +55,23 @@ fi
 
 IMAGE_NAME=$DOCKER_HUB_USERNAME/$DOCKER_HUB_REPO_NAME:$1-$LANGUAGE
 
-docker login -u $DOCKER_HUB_USERNAME --password $DOCKER_PASSWORD
-
 if [ -f "Dockerfile" ]; then
     echo "Dockerfile found"
     docker build -t $IMAGE_NAME .
 else
     docker build -t $IMAGE_NAME -f ${RIGHT_FOLDER}Dockerfile.standalone .
-fi 
+fi
 
 
 docker push $IMAGE_NAME
+
+# If whanos.yml is present
+if [ -f "whanos.yml" ]; then
+    echo "whanos.yml found"
+    cp /var/lib/jenkins/app.deployment.yaml .
+    cp /var/lib/jenkins/app.service.yaml .
+    python3 /var/lib/jenkins/replaceVar.py whanos.yml "$1-$LANGUAGE" "$IMAGE_NAME"
+    cat app.deployment.yaml
+    cat app.service.yaml
+    kubectl apply -f app.deployment.yaml -f app.service.yaml
+fi

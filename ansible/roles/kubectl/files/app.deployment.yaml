@@ -2,25 +2,26 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: redis
-  name: redis-deployment
+    app: app
+  name: app-deployment # Must be replace
   namespace: default
 spec:
-  replicas: 1
+  replicas: 1 # Configurable
   selector:
     matchLabels:
-      app: redis
+      app: app
   template:
     metadata:
       labels:
-        app: redis
+        app: app
     spec:
       containers:
-      - image: nginx:latest
-        name: redis
+      - image: nginx:latest # Must be replace
+        imagePullPolicy: Always
+        name: app
         ports:
-        - containerPort: 80
-        resources:
+        - containerPort: 80 # Configurable
+        resources: # Configurable
           limits:
             cpu: 250m
             memory: 64Mi
@@ -28,3 +29,5 @@ spec:
             cpu: 250m
             memory: 64Mi
       restartPolicy: Always
+      imagePullSecrets:
+      - name: regcred

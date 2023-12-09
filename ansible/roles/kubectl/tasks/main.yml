@@ -12,10 +12,42 @@
     state: present
   become: true
 
-- name: Update apt and install google cloud cli
+- name: Update apt and install kubectl
   ansible.builtin.apt:
     update_cache: yes
     state: present
     pkg:
       - kubectl
   become: true
+
+- name: Install yaml python module
+  ansible.builtin.apt:
+    update_cache: yes
+    state: present
+    pkg:
+      - python3-yaml
+  become: true
+
+- name: Copy app.deployement.yaml
+  ansible.builtin.copy:
+    src: ../files/app.deployment.yaml
+    dest: /var/lib/jenkins/app.deployment.yaml
+    mode: u=rw,g=r,o=r
+  become: true
+  become_user: jenkins
+
+- name: Copy app.service.yaml
+  ansible.builtin.copy:
+    src: ../files/app.service.yaml
+    dest: /var/lib/jenkins/app.service.yaml
+    mode: u=rw,g=r,o=r
+  become: true
+  become_user: jenkins
+
+- name: Copy replaceVar.py
+  ansible.builtin.copy:
+    src: ../files/replaceVar.py
+    dest: /var/lib/jenkins/replaceVar.py
+    mode: u=rw,g=r,o=r
+  become: true
+  become_user: jenkins

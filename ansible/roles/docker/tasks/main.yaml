@@ -22,6 +22,20 @@
       - docker-compose-plugin
   become: true
 
+- name: Log into DockerHub
+  community.docker.docker_login:
+    username: "{{ DOCKER_USERNAME }}"
+    password: "{{ DOCKER_PASSWORD }}"
+  become: true
+
+- name: Copy Docker registry info
+  ansible.builtin.template:
+    src: ../files/registryInfo
+    dest: /var/lib/jenkins/registryInfo
+    mode: u=rw,g=r,o=r
+  become: true
+  become_user: jenkins
+
 - name: Add the docker group to jenkins user
   ansible.builtin.user:
     append: true
