@@ -35,7 +35,7 @@ freeStyleJob('link-project') {
         stringParam("GITHUB_NAME", "", "Github repository owner/name (e.g. 'epitech/whanos')")
         stringParam("GITUB_BRANCH", "" , "Github branch (e.g. 'master')")
         stringParam("DISPLAY_NAME", "" , "Display name for the job (e.g. 'Whanos')")
-        credentialsParam("GITHUB_CREDENTIALS", "", "Github credentials") {
+        credentialsParam("GITHUB_CREDENTIALS") {
             type("com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey")
             description("Ssh credentials for github private repository")
             defaultValue("")
