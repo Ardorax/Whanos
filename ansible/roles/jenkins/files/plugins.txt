@@ -1,6 +1,7 @@
 cloudbees-folder:latest
 configuration-as-code:latest
 credentials:latest
+ssh-credentials:latest
 github:latest
 instance-identity:latest
 job-dsl:latest
