@@ -54,7 +54,7 @@ freeStyleJob('link-project') {
                 scm {
                     git {
                         remote {
-                            github("${GITHUB_NAME}", "ssh", "github.com")
+                            github("${GITHUB_NAME}", "git", "github.com")
                             branch("${GITUB_BRANCH}")
                             credentials("${GITHUB_CREDENTIALS}")
                         }
