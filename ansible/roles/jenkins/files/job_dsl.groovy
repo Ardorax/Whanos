@@ -35,11 +35,7 @@ freeStyleJob('link-project') {
         stringParam("GITHUB_NAME", "", "Github repository owner/name (e.g. 'epitech/whanos')")
         stringParam("GITUB_BRANCH", "" , "Github branch (e.g. 'master')")
         stringParam("DISPLAY_NAME", "" , "Display name for the job (e.g. 'Whanos')")
-        credentialsParam("GITHUB_CREDENTIALS") {
-            type("com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey")
-            description("Ssh credentials for github private repository")
-            defaultValue("")
-        }
+        stringParam("GITHUB TOKEN", "" , "Github token for private repositories")
     }
     steps {
         dsl {
@@ -52,7 +48,16 @@ freeStyleJob('link-project') {
                     scm("* * * * *")
                 }
                 scm {
-                    github("${GITHUB_NAME}", "${GITUB_BRANCH}")
+                    if (GITHUB_TOKEN) {
+                        git {
+                            branch(GITUB_BRANCH)
+                            remote {
+                                url("https://${GITHUB_TOKEN}@github.com/${GITHUB_NAME}")
+                            }
+                        }
+                    } else {
+                        github("${GITHUB_NAME}", "${GITUB_BRANCH}")
+                    }
                 }
                 steps {
                     shell("/bin/bash /var/lib/jenkins/job.sh ${DISPLAY_NAME}")
