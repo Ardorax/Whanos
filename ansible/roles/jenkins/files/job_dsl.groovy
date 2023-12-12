@@ -52,13 +52,7 @@ freeStyleJob('link-project') {
                     scm("* * * * *")
                 }
                 scm {
-                    git {
-                        remote {
-                            github("${GITHUB_NAME}", "ssh")
-                            branch("${GITUB_BRANCH}")
-                            credentials("${GITHUB_CREDENTIALS}")
-                        }
-                    }
+                    github("${GITHUB_NAME}", "${GITUB_BRANCH}")
                 }
                 steps {
                     shell("/bin/bash /var/lib/jenkins/job.sh ${DISPLAY_NAME}")

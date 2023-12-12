@@ -12,4 +12,5 @@
       - curl
       - gnupg
       - apt-transport-https
+      - git
   become: true

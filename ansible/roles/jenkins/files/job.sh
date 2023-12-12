@@ -11,7 +11,7 @@ DOCKER_IMAGES_FOLDER="/var/lib/jenkins/images"
 
 C_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/c/"
 JAVA_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/java/"
-NODE_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/javascript/" 
+NODE_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/javascript/"
 PYTHON_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/python/"
 BEFUNGE_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/befunge/"
 
@@ -73,5 +73,15 @@ if [ -f "whanos.yml" ]; then
     python3 /var/lib/jenkins/replaceVar.py whanos.yml "$1-$LANGUAGE" "$IMAGE_NAME"
     cat app.deployment.yaml
     cat app.service.yaml
+
+    kubectl delete -f app.deployment.yaml
     kubectl apply -f app.deployment.yaml -f app.service.yaml
+
+    IP=$(kubectl get -f app.service.yaml -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    while [ -z "$IP" ]; do
+        echo "Waiting for IP"
+        sleep 5
+        IP=$(kubectl get -f app.service.yaml -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    done
+    echo "Kindly find your app at this ip: $IP"
 fi

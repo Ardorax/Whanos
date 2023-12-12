@@ -2,6 +2,7 @@
 
 import yaml
 import sys
+import random
 
 def parseFile(filename):
     with open(filename, 'r') as f:
@@ -72,11 +73,16 @@ def replaceLabels(redisService, redisDeploy, name):
     redisDeploy['spec']['template']['spec']['containers'][0]['name'] = name
     return redisService, redisDeploy
 
+def rollMe(redisDeploy):
+    redisDeploy["metadata"]["annotations"]["rollme"] = str(random.randint(-2000000000, 2000000000))
+    return redisDeploy
+
 def replaceInFile(config):
     redisService, redisDeploy = openBaseConfig()
     changeName(redisService, redisDeploy, sys.argv[2])
     replaceImage(redisDeploy, sys.argv[3])
     replaceLabels(redisService, redisDeploy, sys.argv[2])
+    redisDeploy = rollMe(redisDeploy)
     redisDeploy = replaceReplicas(redisDeploy, config)
     redisDeploy = replaceresources(redisDeploy, config)
     redisService, redisDeploy = replacePorts(redisDeploy, redisService, config)
