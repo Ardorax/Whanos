@@ -35,7 +35,7 @@ freeStyleJob('link-project') {
         stringParam("GITHUB_NAME", "", "Github repository owner/name (e.g. 'epitech/whanos')")
         stringParam("GITUB_BRANCH", "" , "Github branch (e.g. 'master')")
         stringParam("DISPLAY_NAME", "" , "Display name for the job (e.g. 'Whanos')")
-        stringParam("GITHUB TOKEN", "" , "Github token for private repositories")
+        stringParam("GITHUB_TOKEN", "" , "Github token for private repositories (leave it empty for public repositories)")
     }
     steps {
         dsl {
@@ -48,15 +48,11 @@ freeStyleJob('link-project') {
                     scm("* * * * *")
                 }
                 scm {
-                    if (${GITHUB_TOKEN} != "") {
-                        git {
-                            branch(${GITUB_BRANCH})
-                            remote {
-                                url("https://${GITHUB_TOKEN}@github.com/${GITHUB_NAME}")
-                            }
+                    git {
+                        branch("${GITUB_BRANCH}")
+                        remote {
+                            url("https://${GITHUB_TOKEN}@github.com/${GITHUB_NAME}")
                         }
-                    } else {
-                        github("${GITHUB_NAME}", "${GITUB_BRANCH}")
                     }
                 }
                 steps {
