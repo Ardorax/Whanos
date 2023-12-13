@@ -48,9 +48,9 @@ freeStyleJob('link-project') {
                     scm("* * * * *")
                 }
                 scm {
-                    if (GITHUB_TOKEN) {
+                    if (${GITHUB_TOKEN} != "") {
                         git {
-                            branch(GITUB_BRANCH)
+                            branch(${GITUB_BRANCH})
                             remote {
                                 url("https://${GITHUB_TOKEN}@github.com/${GITHUB_NAME}")
                             }
