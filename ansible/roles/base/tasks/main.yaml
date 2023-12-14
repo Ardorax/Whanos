@@ -13,4 +13,5 @@
       - gnupg
       - apt-transport-https
       - git
+      - acl
   become: true

@@ -22,24 +22,31 @@
       - docker-compose-plugin
   become: true
 
-- name: Start docker
+- name: Add the docker group to jenkins user
+  ansible.builtin.user:
+    append: true
+    groups: docker
+    name: jenkins
+  become: true
+
+- name: ReStart docker
   ansible.builtin.service:
     name: docker
-    state: started
+    state: restarted
   become: true
+
+- name: Log into DockerHub
+  ansible.builtin.shell:
+    cmd: "docker login -u {{ DOCKER_USERNAME }} -p {{ DOCKER_PASSWORD }}"
+    chdir: /var/lib/jenkins
+  become: true
+  become_user: jenkins
 
 - name: Setup docker permission
   ansible.builtin.file:
     path: /var/run/docker.sock
     mode: 666
   become: true
-
-- name: Log into DockerHub
-  community.docker.docker_login:
-    username: "{{ DOCKER_USERNAME }}"
-    password: "{{ DOCKER_PASSWORD }}"
-  become: true
-  become_user: jenkins
 
 - name: Copy Docker registry info
   ansible.builtin.template:
@@ -48,10 +55,3 @@
     mode: u=rw,g=r,o=r
   become: true
   become_user: jenkins
-
-- name: Add the docker group to jenkins user
-  ansible.builtin.user:
-    append: true
-    groups: docker
-    name: jenkins
-  become: true

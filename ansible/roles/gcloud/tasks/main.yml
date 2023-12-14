@@ -32,7 +32,7 @@
 
 - name: Login to GKE
   ansible.builtin.shell:
-    cmd: gcloud auth login --cred-file=/var/lib/jenkins/gke_key.json
+    cmd: "yes | gcloud auth login --cred-file=/var/lib/jenkins/gke_key.json"
   become: true
   become_user: jenkins
   when: copy_gke_key.changed
