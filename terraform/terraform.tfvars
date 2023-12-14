@@ -3,3 +3,4 @@
 
 project_id = ""
 region     = ""
+ssh_key = ""

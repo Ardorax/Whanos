@@ -1,14 +1,3 @@
-variable "ssh_key" {
-  description = "ssh public key of the user"
-  type = string
-}
-
-provider "google" {
-  project = var.project
-  region  = var.region
-  # access_token = var.access_token
-}
-
 resource "google_compute_firewall" "firewall" {
   name    = "gritfy-firewall-externalssh"
   network = "default"
@@ -34,7 +23,7 @@ resource "google_compute_firewall" "webserverrule" {
 # We create a public IP address for our google compute instance to utilize
 resource "google_compute_address" "static" {
   name = "vm-public-address"
-  project = var.project
+  project = var.project_id
   region = var.region
   depends_on = [ google_compute_firewall.firewall ]
 }

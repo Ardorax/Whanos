@@ -5,6 +5,5 @@ ansible/setup.sh
 dockerCredentials
 **/gcloud/files/*
 terraform/*
-vm/*
-!vm/*.tf
-!vm/*.tfvars
+!terraform/*.tf
+!terraform/*.tfvars
