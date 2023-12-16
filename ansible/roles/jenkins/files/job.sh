@@ -74,8 +74,13 @@ if [ -f "whanos.yml" ]; then
     cat app.deployment.yaml
     cat app.service.yaml
 
-    kubectl delete -f app.deployment.yaml
-    kubectl apply -f app.deployment.yaml -f app.service.yaml
+    kubectl get -f app.deployment.yaml
+    if [ $? -eq 0 ]; then
+        kubectl rollout restart -f app.deployment.yaml
+    else
+        kubectl apply -f app.deployment.yaml
+    fi
+    kubectl apply -f app.service.yaml
 
     IP=$(kubectl get -f app.service.yaml -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
     while [ -z "$IP" ]; do

@@ -54,7 +54,3 @@ resource "google_compute_instance" "dev" {
      EOT
   }
 }
-
-output "ad_ip_address" {
-  value = google_compute_address.static.address
-}

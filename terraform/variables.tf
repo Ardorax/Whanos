@@ -13,3 +13,9 @@ variable "ssh_key" {
   description = "ssh public key of the user"
   type        = string
 }
+
+variable "gke_num_nodes" {
+  default     = 2
+  description = "number of gke nodes"
+  type        = number
+}
