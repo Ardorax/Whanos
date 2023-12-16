@@ -47,7 +47,7 @@ Once configured, the Whanos infrastructure will allow developers to push their c
 
 ### Prerequisites
 
-To launch this project, you must have a google cloud account with at least 10$ of credits.
+To launch this project, you must have a google cloud project link with a [billing account](https://cloud.google.com/billing/docs/how-to/modify-project).
 You need to have a docker hub account and a registry created. You need to be connected to your docker hub account on your machine `docker login`.
 You must have (or create) a [google cloud project](https://cloud.google.com/appengine/docs/standard/nodejs/building-app/creating-project).
 You must also have the following tools installed on your machine:
@@ -90,6 +90,8 @@ It will be used by jenkins to send app to the cluster.
 gcloud iam service-accounts create JENKINS-ACCESS --description="Give Jenkins access to cluster" --display-name="Jenkins"
 gcloud projects add-iam-policy-binding PROJECT_ID --member="serviceAccount:JENKINS-ACCESS@PROJECT_ID.iam.gserviceaccount.com" --role="roles/container.admin"
 gcloud iam service-accounts keys create ansible/roles/gcloud/files/gke_key.json --iam-account=JENKINS-ACCESS@PROJECT_ID.iam.gserviceaccount.com
+
+gcloud auth application-default login
 ```
 
 ### Configure variables on the repository
@@ -131,7 +133,8 @@ The last commmand will take a few minutes to complete and a confirmation will be
 ```bash
 gcloud container clusters get-credentials $(terraform output -raw kubernetes_cluster_name) --region=$(terraform output -raw region)
 
-kubectl create secret generic regcred --from-file=.dockerconfigjson=/home/valentin/.docker/config.json --type=kubernetes.io/dockerconfigjson
+# FILE is the path to your docker config file usually located in ~/.docker/config.json
+kubectl create secret generic regcred --from-file=.dockerconfigjson=FILE --type=kubernetes.io/dockerconfigjson
 ```
 
 ### Install and configure Jenkins
@@ -141,6 +144,12 @@ sed -i "s/IP/$(terraform output -raw vm_ip_adress)/g" ../ansible/production # Th
 
 # Replace the string FILL by your docker hub credentials
 ansible-playbook -i ../ansible/production ../ansible/playbook.yml -e GKE_PROJECT=$(terraform output -raw project_id) -e GKE_CLUSTER=$(terraform output -raw kubernetes_cluster_name) -e GKE_REGION=$(terraform output -raw region) -e DOCKER_PASSWORD="FILL" -e DOCKER_REGISTRY="FILL" -e DOCKER_USERNAME="FILL"
+```
+
+### Access Jenkins
+You can get the url of jenkins by running the following command:
+```bash
+echo "http://$(terraform output -raw vm_ip_adress):8080"
 ```
 
 ## Folder Structure
