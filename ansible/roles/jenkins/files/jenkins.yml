@@ -22,9 +22,9 @@ unclassified:
     url: http://127.0.0.1:8080/
 
 jobs:
-  - file: "/usr/local/job_dsl.groovy"
+  - file: "/opt/job_dsl.groovy"
 
 security:
   scriptApproval:
     approvedScriptHashes:
-    - "SHA512:ea14d54ea95552fa3bda56317432f18d926fcd4efa19223f5cae415575ac742315b8fa9a1ef63d9aa8e6978d179b8ff9b737bd7a9cdd7e6796390027736926bc"
+    - "SHA512:3eb740bc0d53bdb1325e60836adf61e9313e60e54515f87558c023d1d4e97c76f4d7d6a7f6f1292c43e9986d62a9919d5f54b23f5237337a506a80a5b2020aef"

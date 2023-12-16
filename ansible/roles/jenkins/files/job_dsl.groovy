@@ -18,7 +18,7 @@ languages.each { language ->
             preBuildCleanup()
         }
         steps {
-            shell("docker build -t whanos-${language} -f /var/lib/jenkins/images/${language}/Dockerfile.base .")
+            shell("docker build -t whanos-${language} -f /opt/images/${language}/Dockerfile.base .")
             // shell("docker tag whanos-${language} localhost:5000/whanos-${language}")
             // shell("docker push localhost:5000/whanos-${language}")
         }
@@ -56,7 +56,7 @@ freeStyleJob('link-project') {
                     }
                 }
                 steps {
-                    shell("/bin/bash /var/lib/jenkins/job.sh ${DISPLAY_NAME}")
+                    shell("/bin/bash /opt/job.sh ${DISPLAY_NAME}")
                 }
             }
             '''.stripIndent())

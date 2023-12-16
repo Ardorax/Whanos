@@ -28,30 +28,32 @@
     groups: docker
     name: jenkins
   become: true
+  register: add_docker_group
+
+- name: Unconditionally reboot the machine with all defaults
+  ansible.builtin.reboot:
+  become: true
+  when: add_docker_group is changed
 
 - name: ReStart docker
   ansible.builtin.service:
     name: docker
     state: restarted
   become: true
+  when: add_docker_group is changed
 
 - name: Log into DockerHub
-  ansible.builtin.shell:
-    cmd: "docker login -u {{ DOCKER_USERNAME }} -p {{ DOCKER_PASSWORD }}"
-    chdir: /var/lib/jenkins
+  docker_login:
+    username: "{{ DOCKER_USERNAME }}"
+    password: "{{ DOCKER_PASSWORD }}"
   become: true
   become_user: jenkins
-
-- name: Setup docker permission
-  ansible.builtin.file:
-    path: /var/run/docker.sock
-    mode: 666
-  become: true
 
 - name: Copy Docker registry info
   ansible.builtin.template:
     src: ../files/registryInfo
-    dest: /var/lib/jenkins/registryInfo
-    mode: u=rw,g=r,o=r
+    dest: /opt/registryInfo
+    mode: '600'
+    owner: jenkins
+    group: jenkins
   become: true
-  become_user: jenkins

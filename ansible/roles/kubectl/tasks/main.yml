@@ -31,23 +31,26 @@
 - name: Copy app.deployement.yaml
   ansible.builtin.copy:
     src: ../files/app.deployment.yaml
-    dest: /var/lib/jenkins/app.deployment.yaml
-    mode: u=rw,g=r,o=r
+    dest: /opt/app.deployment.yaml
+    mode: '600'
+    owner: jenkins
+    group: jenkins
   become: true
-  become_user: jenkins
 
 - name: Copy app.service.yaml
   ansible.builtin.copy:
     src: ../files/app.service.yaml
-    dest: /var/lib/jenkins/app.service.yaml
-    mode: u=rw,g=r,o=r
+    dest: /opt/app.service.yaml
+    mode: '600'
+    owner: jenkins
+    group: jenkins
   become: true
-  become_user: jenkins
 
 - name: Copy replaceVar.py
   ansible.builtin.copy:
     src: ../files/replaceVar.py
-    dest: /var/lib/jenkins/replaceVar.py
-    mode: u=rw,g=r,o=r
+    dest: /opt/replaceVar.py
+    mode: '600'
+    owner: jenkins
+    group: jenkins
   become: true
-  become_user: jenkins

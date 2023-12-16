@@ -1,13 +1,13 @@
 #!/bin/bash
 
-DOCKER_HUB_USERNAME=$(cat /var/lib/jenkins/registryInfo | grep "DOCKER_USERNAME" | cut -d'=' -f2)
-DOCKER_HUB_REPO_NAME=$(cat /var/lib/jenkins/registryInfo | grep "DOCKER_REGISTRY" | cut -d'=' -f2)
+DOCKER_HUB_USERNAME=$(cat /opt/registryInfo | grep "DOCKER_USERNAME" | cut -d'=' -f2)
+DOCKER_HUB_REPO_NAME=$(cat /opt/registryInfo | grep "DOCKER_REGISTRY" | cut -d'=' -f2)
 
-FOUND_TEMPLATES_PATH="/var/lib/jenkins/foundTemplate.sh"
+FOUND_TEMPLATES_PATH="/opt/foundTemplate.sh"
 
 PROJECT_PATH="/var/lib/jenkins/workspace/Projects/$1"
 
-DOCKER_IMAGES_FOLDER="/var/lib/jenkins/images"
+DOCKER_IMAGES_FOLDER="/opt/images"
 
 C_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/c/"
 JAVA_IMAGES_FOLDER="${DOCKER_IMAGES_FOLDER}/java/"
@@ -68,9 +68,9 @@ docker push $IMAGE_NAME
 # If whanos.yml is present
 if [ -f "whanos.yml" ]; then
     echo "whanos.yml found"
-    cp /var/lib/jenkins/app.deployment.yaml .
-    cp /var/lib/jenkins/app.service.yaml .
-    python3 /var/lib/jenkins/replaceVar.py whanos.yml "$1-$LANGUAGE" "$IMAGE_NAME"
+    cp /opt/app.deployment.yaml .
+    cp /opt/app.service.yaml .
+    python3 /opt/replaceVar.py whanos.yml "$1-$LANGUAGE" "$IMAGE_NAME"
     cat app.deployment.yaml
     cat app.service.yaml
 

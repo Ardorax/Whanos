@@ -24,15 +24,16 @@
 - name: Copy GKE credentials
   ansible.builtin.copy:
     src: ../files/gke_key.json
-    dest: /var/lib/jenkins/gke_key.json
-    mode: u=rw,g=r,o=r
+    dest: /opt/gke_key.json
+    mode: '600'
+    owner: jenkins
+    group: jenkins
   become: true
-  become_user: jenkins
   register: copy_gke_key
 
 - name: Login to GKE
   ansible.builtin.shell:
-    cmd: "yes | gcloud auth login --cred-file=/var/lib/jenkins/gke_key.json"
+    cmd: "yes | gcloud auth login --cred-file=/opt/gke_key.json"
   become: true
   become_user: jenkins
   when: copy_gke_key.changed

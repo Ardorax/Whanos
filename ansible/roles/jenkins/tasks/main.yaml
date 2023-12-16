@@ -1,27 +1,41 @@
-- name: Create config folder
-  ansible.builtin.file:
-    path: /var/lib/jenkins/configuration-as-code/
-    state: directory
-  become: true
-
 - name: Copy config file
   ansible.builtin.template:
     src: ../files/jenkins.yml
-    dest: /var/lib/jenkins/configuration-as-code/jenkins.yml
+    dest: /opt/jenkins.yml
     mode: u=rw,g=r,o=r
   become: true
 
 - name: Copy template finder
   ansible.builtin.copy:
     src: ../files/foundTemplate.sh
-    dest: /var/lib/jenkins/foundTemplate.sh
+    dest: /opt/foundTemplate.sh
     mode: u=rwx,g=rx,o=rx
   become: true
 
 - name: Copy groovy file
   ansible.builtin.copy:
     src: ../files/job_dsl.groovy
-    dest: /usr/local/job_dsl.groovy
+    dest: /opt/job_dsl.groovy
+    mode: u=rw,g=r,o=r
+  become: true
+
+- name: Copy Job file
+  ansible.builtin.copy:
+    src: ../files/job.sh
+    dest: /opt
+    mode: u=rw,g=r,o=r
+  become: true
+
+- name: Create Images folder
+  ansible.builtin.file:
+    path: /opt/images
+    state: directory
+  become: true
+
+- name: Copy docker images
+  ansible.builtin.copy:
+    src: ../../../../images/
+    dest: /opt/images
     mode: u=rw,g=r,o=r
   become: true
 
@@ -55,37 +69,10 @@
   ansible.builtin.lineinfile:
     dest=/usr/lib/systemd/system/jenkins.service
     regexp='^Environment="JAVA_OPTS=-Djava.awt.headless=true'
-    line='Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"\nEnvironment="CASC_JENKINS_CONFIG=/var/lib/jenkins/configuration-as-code/jenkins.yml"'
+    line='Environment="JAVA_OPTS=-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"\nEnvironment="CASC_JENKINS_CONFIG=/opt/jenkins.yml"'
   register: result_skip_startup_wizard
   become: true
   when: install_jenkins is changed # Only change one time
-
-- name: Copy Job file
-  ansible.builtin.copy:
-    src: ../files/job.sh
-    dest: /var/lib/jenkins/
-    mode: u=rw,g=r,o=r
-  become: true
-
-- name: Create Images folder
-  ansible.builtin.file:
-    path: /var/lib/jenkins/images
-    state: directory
-  become: true
-
-- name: Copy docker images
-  ansible.builtin.copy:
-    src: ../../../../images/
-    dest: /var/lib/jenkins/images
-    mode: u=rw,g=r,o=r
-  become: true
-
-- name: Start Jenkins
-  ansible.builtin.service:
-    name: jenkins
-    state: started
-    daemon_reload: true
-  become : true
 
 - name: Download Jenkins CLI jar
   ansible.builtin.get_url:
@@ -93,6 +80,7 @@
     dest: /opt/jenkins-cli.jar
   become: true
   register: download_jenkins_cli
+  when: install_jenkins is changed
 
 - name: Get basic auth password
   ansible.builtin.shell: cat /var/lib/jenkins/secrets/initialAdminPassword
@@ -111,5 +99,5 @@
     state: restarted
     daemon_reload: true
   become : true
-  # when: download_jenkins_cli is changed
+  when: download_jenkins_cli is changed
   # The previous line should be removed if the goal is to reach 100% of idempotency.
