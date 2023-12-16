@@ -39,7 +39,7 @@
     mode: u=rw,g=r,o=r
   become: true
 
-- name: Install the Jenkins apt repository key is installed
+- name: Install the Jenkins apt repository key
   ansible.builtin.apt_key:
     url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
     state: present

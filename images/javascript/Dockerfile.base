@@ -12,4 +12,6 @@ ONBUILD RUN ["npm", "install"]
 
 ONBUILD COPY . .
 
+ONBUILD RUN ["rm", "package-lock.json"]
+
 ONBUILD CMD ["node", "."]

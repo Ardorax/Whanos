@@ -9,4 +9,6 @@ ONBUILD COPY requirements.txt .
 
 ONBUILD RUN pip install -r requirements.txt
 
+ONBUILD RUN ["rm", "requirements.txt"]
+
 ONBUILD CMD ["python", "-m", "app"]

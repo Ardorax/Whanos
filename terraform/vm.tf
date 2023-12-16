@@ -5,7 +5,7 @@ resource "google_compute_firewall" "firewall" {
     protocol = "tcp"
     ports    = ["22"]
   }
-  source_ranges = ["0.0.0.0/0"] # Not So Secure. Limit the Source Range
+  source_ranges = [var.vm_firewall_allow_ip]
   target_tags   = ["externalssh"]
 }
 
@@ -16,7 +16,7 @@ resource "google_compute_firewall" "webserverrule" {
     protocol = "tcp"
     ports    = ["8080"]
   }
-  source_ranges = ["0.0.0.0/0"] # Not So Secure. Limit the Source Range
+  source_ranges = [var.vm_firewall_allow_ip]
   target_tags   = ["webserver"]
 }
 

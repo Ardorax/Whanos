@@ -43,9 +43,11 @@
     cmd: gcloud config set project {{ GKE_PROJECT }}
   become: true
   become_user: jenkins
+  when: copy_gke_key.changed
 
 - name: Get credentials for GKE cluster
   ansible.builtin.shell:
     cmd: gcloud container clusters get-credentials {{ GKE_CLUSTER }} --region {{ GKE_REGION }}
   become: true
   become_user: jenkins
+  when: copy_gke_key.changed

@@ -2,7 +2,7 @@
 
 import yaml
 import sys
-import random
+from time import time_ns
 
 def parseFile(filename):
     with open(filename, 'r') as f:
@@ -74,7 +74,7 @@ def replaceLabels(redisService, redisDeploy, name):
     return redisService, redisDeploy
 
 def rollMe(redisDeploy):
-    redisDeploy["metadata"]["annotations"]["rollme"] = str(random.randint(-2000000000, 2000000000))
+    redisDeploy["spec"]["template"]["metadata"]["annotations"]["rollme"] = str(time_ns())
     return redisDeploy
 
 def replaceInFile(config):

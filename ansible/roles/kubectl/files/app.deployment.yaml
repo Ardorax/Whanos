@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   labels:
     app: app
-  annotations:
-    rollme: to_replace
   name: app-deployment # Must be replace
   namespace: default
 spec:
@@ -16,6 +14,8 @@ spec:
     metadata:
       labels:
         app: app
+      annotations:
+        rollme: to_replace
     spec:
       containers:
       - image: nginx:latest # Must be replace

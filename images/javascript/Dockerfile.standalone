@@ -12,4 +12,6 @@ RUN ["npm", "install"]
 
 COPY . .
 
+RUN ["rm", "package-lock.json"]
+
 CMD ["node", "."]

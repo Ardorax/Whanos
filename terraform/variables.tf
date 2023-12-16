@@ -19,3 +19,9 @@ variable "gke_num_nodes" {
   description = "number of gke nodes"
   type        = number
 }
+
+variable "vm_firewall_allow_ip" {
+  default     = "0.0.0.0/0"
+  description = "number of gke nodes"
+  type        = string
+}
