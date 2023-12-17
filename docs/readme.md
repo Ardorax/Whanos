@@ -12,6 +12,9 @@
   - [Deploy the infrastructure](#deploy-the-infrastructure)
   - [Send your docker registry credentials to the cluster](#send-your-docker-registry-credentials-to-the-cluster)
   - [Install and configure Jenkins](#install-and-configure-jenkins)
+  - [Access Jenkins](#access-jenkins)
+  - [Jenkins private repo](#jenkins-private-repo)
+  - [Deploy an app](#deploy-an-app)
 - [Folder Structure](#folder-structure-1)
   - [ansible folder](#ansible-folder)
     - [Roles](#roles)
@@ -151,6 +154,13 @@ You can get the url of jenkins by running the following command:
 ```bash
 echo "http://$(terraform output -raw vm_ip_adress):8080"
 ```
+
+### Jenkins private repo
+If you want to access a private repo, you must create a credential in jenkins.
+The type of the credential must be `Username with password` in the `Jenkins` scope.
+
+### Deploy an app
+When you want an app to be deployed online, you should configure the `whanos.yml` on your project accordingly to your needs. The ip adress of the service is displayed in the console output of the job. You then just need to go to this ip at the wanted port to access your app.
 
 ## Folder Structure
 

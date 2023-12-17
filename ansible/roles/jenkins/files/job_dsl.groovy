@@ -32,10 +32,14 @@ freeStyleJob('Whanos base images/Build all base images') {}
 
 freeStyleJob('link-project') {
     parameters {
-        stringParam("GITHUB_NAME", "", "Github repository owner/name (e.g. 'epitech/whanos')")
-        stringParam("GITUB_BRANCH", "" , "Github branch (e.g. 'master')")
+        stringParam("GIT_URL", "", "Git repository clone url (e.g. 'https://github.com/user/project.git')")
+        stringParam("BRANCH", "main" , "branch (e.g. 'main')")
         stringParam("DISPLAY_NAME", "" , "Display name for the job (e.g. 'Whanos')")
-        stringParam("GITHUB_TOKEN", "" , "Github token for private repositories (leave it empty for public repositories)")
+        credentialsParam('GIT_CRED') {
+            type('com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl')
+            required()
+            description('A token to access private repositories')
+        }
     }
     steps {
         dsl {
@@ -49,9 +53,10 @@ freeStyleJob('link-project') {
                 }
                 scm {
                     git {
-                        branch("${GITUB_BRANCH}")
+                        branch("${BRANCH}")
                         remote {
-                            url("https://${GITHUB_TOKEN}@github.com/${GITHUB_NAME}")
+                            url("${GIT_URL}")
+                            credentials("${GIT_CRED}")
                         }
                     }
                 }
