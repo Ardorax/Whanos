@@ -45,6 +45,7 @@ fi
 if [ "$FOUND_TEMPLATES" = "app/main.bf" ]; then
     RIGHT_FOLDER="$BEFUNGE_IMAGES_FOLDER"
     LANGUAGE="befunge"
+    cp /opt/images/befunge/befunge_intepretor.py .
 fi
 ## else
 if [ -z "$RIGHT_FOLDER" ]; then
