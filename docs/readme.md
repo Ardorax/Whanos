@@ -327,6 +327,6 @@ More information can be found in the [LICENSE](./LICENSE) file.
 
 
 ## Authors
-- [Maxime DZIURA](mailto:maxime.dziura@epitech.eu)
-- [Joshua BRIONNE](mailto:joshua.brionne@epitech.eu)
-- [Valentin Dury](mailto:valentin.dury@epitech.eu)
+- [Maxime DZIURA](https://github.com/ImperialCrowns)
+- [Joshua BRIONNE](https://github.com/izimio)
+- [Valentin DURY](https://github.com/Ardorax)
